@@ -73,35 +73,35 @@ bool EnvConfig::parseEnv(char cfgFileName[]) {
  * @param rowIdx int - The index of the row being parsed.
  * @returns vector of cells representing the empty/solid state of the row cells.
  */
-vector<eCell> EnvConfig::parseRow(string line, int rowIdx) {
+vector<Maze::eCell> EnvConfig::parseRow(string line, int rowIdx) {
 	const char * lineChar = line.c_str();
 	int rowWidth = line.size();
-	vector<eCell> row;
+	vector<Maze::eCell> row;
 
 	for (int idx; idx < rowWidth; idx++) {
 		switch (lineChar[idx]) {
 			case '#': // Solid Cell
-				row.push_back(CELL_SOLID);
+				row.push_back(Maze::CELL_SOLID);
 			break;
 
 			case '.': // Empty Cell
-				row.push_back(CELL_EMPTY);
+				row.push_back(Maze::CELL_EMPTY);
 			break;
 
 			case 'B': // The bot's location
 				m_botLoc.coord.x = idx;
 				m_botLoc.row = rowIdx;
-				row.push_back(CELL_OCCUPIED);
+				row.push_back(Maze::CELL_OCCUPIED);
 			break;
 
 			case 'E': // The exit's location
 				m_exitLoc.coord.x = idx;
 				m_exitLoc.row = rowIdx;
-				row.push_back(CELL_EMPTY);
+				row.push_back(Maze::CELL_EXIT);
 			break;
 
 			default: // Unknown cell found!
-				row.push_back(CELL_EMPTY);
+				row.push_back(Maze::CELL_EMPTY);
 				cerr << "Invalid character [" << lineChar[idx] << "] found at row: " <<
 						rowIdx << ", col: " << idx <<". Substituting with empty." << endl;
 			break;
@@ -117,8 +117,15 @@ vector<eCell> EnvConfig::parseRow(string line, int rowIdx) {
  * @param loc tCfgLoc - Object which needs the y and z coords updated
  * @param dim tDimension - object specifing the maze's sizes.
  */
-void EnvConfig::updateCfgLocYZ(tCfgLoc &loc, tDimension dim) {
-	loc.coord.y = loc.row % dim.depth;
-	// Reduce Z by one to account for zero base instead of 1 coords.
-	loc.coord.z = (dim.height / loc.row) - 1;
+void EnvConfig::updateCfgLocYZ(tCfgLoc &loc, Maze::tDimension dim) {
+	// Reduce y by one to account for zero base instead of 1 coords.
+	// make sure to account for the entity being on the first row
+	if (loc.row != 0) {
+		loc.coord.y = (dim.height / loc.row) - 1;
+	} else {
+		loc.coord.y = 0;
+	}
+
+	// Get the depth of the entity's location
+	loc.coord.z = loc.row % dim.depth;
 }
