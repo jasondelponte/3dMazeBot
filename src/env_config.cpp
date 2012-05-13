@@ -57,8 +57,8 @@ bool EnvConfig::parseEnv(char cfgFileName[]) {
 	m_dim.depth = numRows / m_dim.height;
 
 	// Update the Bot and exit with their y & z coords based on their row.
-	updateCfgLocYZ(m_botLoc, m_dim);
-	updateCfgLocYZ(m_exitLoc, m_dim);
+	m_botLoc.coord = calcCoordFromRowDim(m_botLoc.coord.x, m_botLoc.row, m_dim);
+	m_exitLoc.coord = calcCoordFromRowDim(m_exitLoc.coord.x, m_exitLoc.row, m_dim);
 
 	return true;
 }
@@ -73,12 +73,12 @@ bool EnvConfig::parseEnv(char cfgFileName[]) {
  * @param rowIdx int - The index of the row being parsed.
  * @returns vector of cells representing the empty/solid state of the row cells.
  */
-vector<Maze::eCell> EnvConfig::parseRow(string line, int rowIdx) {
+EnvConfig::tMazeRow EnvConfig::parseRow(string line, int rowIdx) {
 	const char * lineChar = line.c_str();
 	int rowWidth = line.size();
-	vector<Maze::eCell> row;
+	tMazeRow row;
 
-	for (int idx; idx < rowWidth; idx++) {
+	for (int idx=0; idx < rowWidth; idx++) {
 		switch (lineChar[idx]) {
 			case '#': // Solid Cell
 				row.push_back(Maze::CELL_SOLID);
@@ -112,20 +112,19 @@ vector<Maze::eCell> EnvConfig::parseRow(string line, int rowIdx) {
 }
 
 /**
- * Updates the passed in config loc's Y and Z coords using the existing
- * row value, and the passed in dimensions.
- * @param loc tCfgLoc - Object which needs the y and z coords updated
+ * Calculates the Y and Z coordinates using the provided row and dimenions values
+ * @param x int - existing x coordinate value
+ * @param row int - defines which row the item is in
  * @param dim tDimension - object specifing the maze's sizes.
  */
-void EnvConfig::updateCfgLocYZ(tCfgLoc &loc, Maze::tDimension dim) {
-	// Reduce y by one to account for zero base instead of 1 coords.
-	// make sure to account for the entity being on the first row
-	if (loc.row != 0) {
-		loc.coord.y = (dim.height / loc.row) - 1;
-	} else {
-		loc.coord.y = 0;
-	}
+Maze::tCoord EnvConfig::calcCoordFromRowDim(int x, int row, Maze::tDimension dim) {
+	int y = 0, z = 0;
+
+	// Calculate the y from row and hight.
+	y = (row / dim.height);
 
 	// Get the depth of the entity's location
-	loc.coord.z = loc.row % dim.depth;
+	z = row % dim.depth;
+
+	return Maze::tCoord(x, y, z);
 }

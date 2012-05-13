@@ -54,11 +54,10 @@ int main(int argc, char* argv[]) {
 		return EXIT_FAILURE;
 	}
 
-
 	Game game;
 	// We need to build the environment for the game.  This includes
 	// placing the bot, and building the maze and exit.
-	game.buildMaze(cfg);
+	game.buildEnv(cfg);
 
 	// We've build the game environment. The maze, and bot have been
 	// created. Time to find our way out!  We'll wait here until the

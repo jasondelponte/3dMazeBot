@@ -14,7 +14,17 @@
 class EnvConfig {
 public:
 	// A 2 dimentional list of the cells on the board layed out in rows
-	typedef std::vector<std::vector<Maze::eCell > > tMazeRows;
+	typedef std::vector<Maze::eCell> tMazeRow;
+	typedef std::vector<tMazeRow> tMazeRows;
+
+	// Defines a point of interest in the maze where the position
+	// of it needs to be identified at the start.
+	struct tCfgLoc {
+		Maze::tCoord coord;
+		int row;
+
+		tCfgLoc(int r=0, Maze::tCoord c = Maze::tCoord()): row(r), coord(c){};
+	};
 
 	/**
 	 * Builds the game environment from the config file
@@ -27,7 +37,7 @@ public:
 	 * Returns the dimentions of the maze
 	 * @returns tDimension - Contains the height, width, depth of the maze
 	 */
-	Maze::tDimension getDimensions() { return m_dim; };
+	Maze::tDimension getDim() { return m_dim; };
 
 	/**
 	 * Returns the location of the bot's starting point in the maze
@@ -47,16 +57,16 @@ public:
 	 */
 	tMazeRows getMazeRows() { return m_rows; };
 
+	/**
+	 * Calculates the Y and Z coordinates using the provided row and dimenions values
+	 * @param x int - existing x coordinate value
+	 * @param row int - defines which row the item is in
+	 * @param dim tDimension - object specifing the maze's sizes.
+	 * @returns coordinate of the cell in the maze
+	 */
+	static Maze::tCoord calcCoordFromRowDim(int x, int row, Maze::tDimension dim);
 
 private:
-	// Defines a point of interest in the maze where the position
-	// of it needs to be identified at the start.
-	struct tCfgLoc {
-		Maze::tCoord coord;
-		int row;
-
-		tCfgLoc(int r=0, Maze::tCoord c = Maze::tCoord()): row(r), coord(c){};
-	};
 
 	// Total number of layers
 	Maze::tDimension m_dim;
@@ -80,15 +90,7 @@ private:
  	 * @param rowIdx int - The index of the row being parsed.
 	 * @returns vector of cells representing the empty/solid state of the row cells.
 	 */
-	std::vector<Maze::eCell> parseRow(std::string line, int rowIdx);
-
-	/**
-	 * Updates the passed in config loc's Y and Z coords using the existing
-	 * row value, and the passed in dimensions.
-	 * @param loc tCfgLoc - Object which needs the y and z coords updated
-	 * @param dim tDimension - object specifing the maze's sizes.
-	 */
-	void updateCfgLocYZ(tCfgLoc &loc, Maze::tDimension dim);
+	tMazeRow parseRow(std::string line, int rowIdx);
 };
 
 #endif // !defined(_ENV_CONFIG_HPP_)

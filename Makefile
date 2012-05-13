@@ -11,7 +11,7 @@ INCLUDES = -I$(BASEDIR)/inc -I$(BASEDIR)/test
 
 # Compiler and options
 CXX = g++
-CXXFLAGS = $(INCLUDES)
+CXXFLAGS = $(INCLUDES) -g 
 LDFLAGS =
 EXEC = $(BINDIR)/hoverbot
 TSTEXEC = $(BINDIR)/hoverbot_test
@@ -25,7 +25,8 @@ SOURCES = \
 
 TSTSOURCES = \
 	$(TSTSRCDIR)/test_unit.cpp \
-	$(TSTSRCDIR)/maze_test.cpp
+	$(TSTSRCDIR)/maze_test.cpp \
+	$(TSTSRCDIR)/env_config_test.cpp
 
 # Set the build destination to be different than the source
 OBJECTS = $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SOURCES))
@@ -52,7 +53,7 @@ $(OBJDIR):
 checkdirs: $(BINDIR) $(OBJDIR)
 
 $(EXEC): $(OBJDIR)/main.o $(OBJECTS) 
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(OBJDIR)/main.o  $(OBJECTS) -o $@
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(OBJDIR)/main.o $(OBJECTS) -o $@
 
 # Build the exec with the test source included
 $(TSTEXEC): $(OBJDIR)/main_test.o $(OBJECTS) $(TSTOBJS)

@@ -1,5 +1,5 @@
 #include "bot.hpp"
 
-Bot::Bot() {
+Bot::Bot(Maze::tCoord loc): m_loc(loc) {
 
 }

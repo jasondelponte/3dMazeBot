@@ -99,9 +99,11 @@ string MazeTest::TestSetCellState(TestUnit::tTestData* pTestData) {
 	Maze::tCoord noChg = Maze::tCoord(2, 2, 2);
 
 	// Update the cells, start, end, and inner item
-	pMaze->updateCell(chg1, Maze::CELL_SOLID);
-	pMaze->updateCell(chg2, Maze::CELL_OCCUPIED);
-	pMaze->updateCell(chg3, Maze::CELL_EXIT);
+	if (!pMaze->updateCell(chg1, Maze::CELL_SOLID) ||
+			!pMaze->updateCell(chg2, Maze::CELL_OCCUPIED) ||
+			!pMaze->updateCell(chg3, Maze::CELL_EXIT)) {
+		return "Failed to update valid cell in maze";
+	}
 
 	Maze::tGrid* pGrid = pMaze->getGrid();
 

@@ -7,7 +7,7 @@
  * read to have its cells' state set.
  * @param dim tDimension - Size of the maze.
  */
-Maze::Maze(tDimension dim) {
+Maze::Maze(tDimension dim): m_grid(NULL) {
 	m_grid = createGrid(dim);
 }
 

@@ -1,10 +1,9 @@
-#include "main_test.hpp"
-
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "test_unit.hpp"
 #include "maze_test.hpp"
-
+#include "env_config_test.hpp"
 
 /**
  * Run through all of the test case and report failure for any testcase that fails
@@ -12,7 +11,8 @@
 int main(int argc, char* argv[]) {
 	// Build a list of the tests
 	TestUnit *tests[] = {
-		new MazeTest()
+		new MazeTest(),
+		new EnvConfigTest()
 	};
 	int numTests = sizeof(tests)/sizeof(TestUnit*);
 
