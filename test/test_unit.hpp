@@ -45,7 +45,7 @@ protected:
 
 	// Test function of the the children which will contain
 	// the actuall tests to be run.
-	typedef bool (*tTestFunc)(tTestData* pTestData);
+	typedef std::string (*tTestFunc)(tTestData* pTestData);
 
 	// Defines the type for a list of tests
 	typedef std::map<std::string, tTestFunc> tTestList;

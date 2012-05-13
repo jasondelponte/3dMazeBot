@@ -68,6 +68,27 @@ public:
 	 */
 	tGrid* getGrid() { return m_grid; }
 
+	/**
+	 * Returns if the grid specified  and is valid
+	 * @returns state of the grid
+	 */
+	bool hasGrid() { return (m_grid != NULL && m_grid->layout != NULL); }
+
+	/**
+	 * returns if the coordinate provided are valid inside of the grid
+	 * @param coord - a location in the grid
+	 * @returns if the coordinate is valid
+	 */
+	bool isValidCoord(tCoord coord);
+
+	/**
+	 * Updates the cell located at the coordiantes with the state provided
+	 * @param coord - Location of the cell to update
+	 * @param state - Not state
+	 * @returns success if the cell was updated
+	 */
+	bool updateCell(tCoord coord, eCell state);
+
 private:
 	// 3d size dimension of the maze.
 	tGrid* m_grid;

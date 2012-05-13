@@ -39,7 +39,7 @@ TestUnit::tTestResult TestUnit::runTests() {
 		tTestData* pTestData = beforeEach();
 
 		// Run the test and keep track of failure/success
-		bool testRes = false;
+		string testRes;
 
 		try {
 			testRes = test(pTestData);
@@ -47,10 +47,10 @@ TestUnit::tTestResult TestUnit::runTests() {
 			cerr << testName << ", ERROR, unhandled exception." << endl;
 		}
 
-		if (testRes) {
+		if (testRes.size() == 0) {
 			results.succs++;
 		} else {
-			cerr << testName << ", FAILED" << endl;
+			cerr << testName << ", FAILED: " << testRes << endl;
 			results.fails++;
 		}
 

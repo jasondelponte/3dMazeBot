@@ -23,6 +23,33 @@ Maze::~Maze() {
 }
 
 /**
+ * Updates the cell located at the coordiantes with the state provided
+ * @param coord - Location of the cell to update
+ * @param state - Not state
+ * @returns success if the cell was updated
+ */
+bool Maze::updateCell(Maze::tCoord coord, Maze::eCell state) {
+	if (!isValidCoord(coord)) { return false; }
+
+	m_grid->layout[coord.x][coord.y][coord.z].state = state;
+
+	return true;
+}
+
+/**
+ * returns if the coordinate provided are valid inside of the grid
+ * @param coord - a location in the grid
+ * @returns if the coordinate is valid
+ */
+bool Maze::isValidCoord(Maze::tCoord coord) {
+	if (!hasGrid()) { return false; }
+	if (coord.x < 0 || coord.y < 0 || coord.z < 0) { return false; }
+	if (coord.x >= m_grid->dim.width || coord.y >= m_grid->dim.height || coord.z >= m_grid->dim.depth) { return false; }
+
+	return true;
+}
+
+/**
  * Creates and returns a new maze grid with the dimenions provided
  * @param dim - the dimenional size of the grid.
  * @returns a new grid object.
@@ -35,8 +62,8 @@ Maze::tGrid* Maze::createGrid(tDimension dim) {
 		for (int y=0; y < dim.height; y++) {
 			layout[x][y] = new tCell[dim.depth];
 			// Initialize the cell coords
-			for (int c=0; c < dim.depth; c++) {
-
+			for (int z=0; z < dim.depth; z++) {
+				layout[x][y][z] = tCell(CELL_EMPTY, tCoord(x, y, z));
 			}
 		}
 	}
