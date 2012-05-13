@@ -126,4 +126,3 @@ string PathTreeTest::TestAncstorCellSearch(TestUnit::tTestData* pTestData) {
 	delete root;
 	return "";
 }
-
