@@ -1,7 +1,9 @@
 #ifndef _MAZE_HPP_
 #define _MAZE_HPP_
 
+#include <stdio.h>
 #include <stdlib.h>
+#include <string>
 
 /**
  * Definies the maze object that the entities will travel through.
@@ -24,6 +26,11 @@ public:
 		int width, height, depth;
 		
 		tDimension(int w=0, int h=0, int d=0): width(w), height(h), depth(d) {}
+		std::string String() {
+			char buff[100]={0x00};
+			sprintf(buff, "(%d,%d,%d)", width, height, depth);
+			return std::string(buff);
+		}
 	};
 
 	// Defines a location inside of the maze
@@ -31,6 +38,18 @@ public:
 		int x, y, z;
 
 		tCoord(int _x=0, int _y=0, int _z=0): x(_x), y(_y), z(_z) {}
+
+		bool operator==(const tCoord c) {
+			return (x == c.x && y == c.y && z == c.z);
+		}
+		bool operator!=(const tCoord c) {
+			return (x != c.x || y != c.y || z != c.z);
+		}
+		std::string String() {
+			char buff[100]={0x00};
+			sprintf(buff, "(%d,%d,%d)", x, y, z);
+			return std::string(buff);
+		}
 	};
 
 	// defines a specific cell in the maze. it contains its location and state
@@ -88,6 +107,13 @@ public:
 	 * @returns success if the cell was updated
 	 */
 	bool updateCell(tCoord coord, eCell state);
+
+	/**
+	 * Prints out the layer of the maze along the Y axis of the X/Z plain.
+	 * If the layer is invalid (above or below the maze) nothing will be printed.
+	 * @param layer - the section of the maze to be printed to stdout
+	 */
+	void printLayer(int layer);
 
 private:
 	// 3d size dimension of the maze.

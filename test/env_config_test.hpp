@@ -23,6 +23,13 @@ private:
 	 */
 	static std::string TestLoadProvidedFile(TestUnit::tTestData* pTestData);
 
+	/**
+	 * Verifies that the calculate coordinates from a row/dim works correctly
+	 * @param pTestData - pointer to test container, not used for these tests
+	 * @returns error string if any.
+	 */
+	static std::string TestCalcCoordFromRowDim(TestUnit::tTestData* pTestData);
+
 };
 
 #endif //!defined(_ENV_CONFIG_TEST_HPP_)

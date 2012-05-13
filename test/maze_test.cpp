@@ -139,6 +139,7 @@ string MazeTest::TestSetCellState(TestUnit::tTestData* pTestData) {
 string MazeTest::TestCoordValidation(TestUnit::tTestData* pTestData) {
 	Maze* pMaze = (Maze*)pTestData->testObj;
 
+	// Negatives
 	if (pMaze->isValidCoord(Maze::tCoord(-1, 0, 0))) {
 		return "Failed to mark coord(-1, 0, 0) as invalid";
 	}
@@ -148,6 +149,7 @@ string MazeTest::TestCoordValidation(TestUnit::tTestData* pTestData) {
 	if (pMaze->isValidCoord(Maze::tCoord(0, 0, -1))) {
 		return "Failed to mark coord(0, 0, -1) as invalid";
 	}
+	// Outside
 	if (pMaze->isValidCoord(Maze::tCoord(100, 0, 0))) {
 		return "Failed to mark coord(100, 0, 0) as invalid";
 	}
@@ -155,6 +157,16 @@ string MazeTest::TestCoordValidation(TestUnit::tTestData* pTestData) {
 		return "Failed to mark coord(0, 100, 0) as invalid";
 	}
 	if (pMaze->isValidCoord(Maze::tCoord(0, 0, 100))) {
+		return "Failed to mark coord(0, 0, 100) as invalid";
+	}
+	// Maze edges
+	if (pMaze->isValidCoord(Maze::tCoord(10, 0, 0))) {
+		return "Failed to mark coord(0, 0, 100) as invalid";
+	}
+	if (pMaze->isValidCoord(Maze::tCoord(0, 5, 0))) {
+		return "Failed to mark coord(0, 0, 100) as invalid";
+	}
+	if (pMaze->isValidCoord(Maze::tCoord(0, 0, 7))) {
 		return "Failed to mark coord(0, 0, 100) as invalid";
 	}
 

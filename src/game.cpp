@@ -1,7 +1,20 @@
 #include "game.hpp"
 
+#include <iostream>
 
+using namespace std;
+
+/**
+ * Initializes tha game so it can be built
+ */
 Game::Game(): m_pMaze(NULL), m_pBot(NULL) {}
+
+/**
+ * Cleans up any memeory allocated remaning
+ */
+Game::~Game() {
+	cleanup();
+}
 
 /**
  * Builds out the maze using the environment configuration provided.
@@ -11,11 +24,12 @@ Game::Game(): m_pMaze(NULL), m_pBot(NULL) {}
 bool Game::buildEnv(EnvConfig cfg) {
 	EnvConfig::tMazeRows rows = cfg.getMazeRows();
 
-	m_pBot = new Bot(cfg.getBotCoord());
-	m_ExitCoord = cfg.getExitCoord();
-
 	Maze::tDimension dim = cfg.getDim();
 	m_pMaze = new Maze(dim);
+
+	m_pBot = new Bot(m_pMaze->getGrid(), cfg.getBotCoord());
+
+	m_ExitCoord = cfg.getExitCoord();
 
 	initMazeCellsState(m_pMaze, rows, dim);
 }
@@ -23,22 +37,29 @@ bool Game::buildEnv(EnvConfig cfg) {
 /**
  * Starts the simulation step which will move the enitites through the maze trying to find the exit.
  * This will run until the simulation either fails to find an exit, or the entities exit.
+ * @returns true if the maze was successfuly solved. false otherwise.
  */
-void Game::run() {
-	// // TODO Move calculate the bot's route, between its current location and the exit.
-	// if (!m_pBot->calcRoute(m_pMaze, m_ExitCoord)) {
-	// 	cerr << "Not Escapable";
-	// 	return false;
-	// }
+bool Game::run() {
+	// Calculate the bot's initialize route through the maze. If it is unable to find a path
+	// we'll know here and can stop before we start moving the bot.
+	if (!m_pBot->calcRoute(m_ExitCoord)) {
+		cerr << "Not Escapable" << endl;
+		cleanup();
+		return false;
+	}
 
-	// while(m_pBot.getLoc != m_ExitCoord) {
-	// 	m_pBot->move();
+	// Step through the simulation telling the bot to move through the maze
+	while(m_pBot->getLoc() != m_ExitCoord) {
+		if (!m_pBot->move()) {
+			cerr << "Bot didn't move this tern" << endl;
+		}
 
-	// 	m_pMaze->printLayer(m_pBot->getLoc().y);
-	// }
+		m_pMaze->printLayer(m_pBot->getLoc().y);
+	}
 
-	// cout << "Escapable: " << m_pBot->getRouteUsed();
-	// return true;
+	cout << "Escapable: " << m_pBot->getRouteUsed();
+	cleanup();
+	return true;
 };
 
 /**
@@ -65,5 +86,19 @@ void Game::initMazeCellsState(Maze* pMaze, EnvConfig::tMazeRows rows, Maze::tDim
 			x++;
 		}
 		rowIdx++;
+	}
+}
+
+/**
+ * Deletes any allocated memory used during run
+ */
+void Game::cleanup() {
+	if (m_pMaze != NULL) {
+		delete m_pMaze;
+		m_pMaze = NULL;
+	}
+	if (m_pBot != NULL) {
+		delete m_pBot;
+		m_pBot = NULL;
 	}
 }

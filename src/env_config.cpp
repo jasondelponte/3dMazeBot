@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <fstream>
+#include <string>
 
 using namespace std;
 
@@ -120,11 +121,15 @@ EnvConfig::tMazeRow EnvConfig::parseRow(string line, int rowIdx) {
 Maze::tCoord EnvConfig::calcCoordFromRowDim(int x, int row, Maze::tDimension dim) {
 	int y = 0, z = 0;
 
-	// Calculate the y from row and hight.
-	y = (row / dim.height);
+	// Get the y axis based on the depth and row index
+	y = row / dim.depth;
 
 	// Get the depth of the entity's location
 	z = row % dim.depth;
+
+	if (x >= dim.width || y >= dim.height || z >= dim.depth) {
+		cerr << "Created coordinate outside of maze dimenions: x=" << x <<", row=" << row << " dim=" << dim.String() << endl;
+	}
 
 	return Maze::tCoord(x, y, z);
 }

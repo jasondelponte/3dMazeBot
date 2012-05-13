@@ -7,7 +7,15 @@
 
 class Game {
 public:
+	/**
+	 * Initializes tha game so it can be built
+	 */
 	Game();
+
+	/**
+	 * Cleans up any memeory allocated remaning
+	 */
+	~Game();
 
 	/**
 	 * Builds out the maze using the environment configuration provided.
@@ -19,8 +27,9 @@ public:
 	/**
 	 * Starts the simulation step which will move the enitites through the maze trying to find the exit.
 	 * This will run until the simulation either fails to find an exit, or the entities exit.
+ 	 * @returns true if the maze was successfuly solved. false otherwise.
 	 */
-	void run();
+	bool run();
 
 private:
 	// Game board that the bot will move through.
@@ -39,6 +48,11 @@ private:
  	 * @param dim - dimensions of the maze
 	 */
 	void initMazeCellsState(Maze* pMaze, EnvConfig::tMazeRows row, Maze::tDimension dim);
+
+	/**
+	 * Deletes any allocated memory used during run
+	 */
+	void cleanup();
 };
 
 #endif // !defined(_GAME_HPP_)

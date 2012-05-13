@@ -1,6 +1,8 @@
 #include "maze.hpp"
 
+#include <iostream>
 
+using namespace std;
 
 /**
  * Initializes the maze and with a given size. Once it is initialized it is
@@ -47,6 +49,15 @@ bool Maze::isValidCoord(Maze::tCoord coord) {
 	if (coord.x >= m_grid->dim.width || coord.y >= m_grid->dim.height || coord.z >= m_grid->dim.depth) { return false; }
 
 	return true;
+}
+
+/**
+ * Prints out the layer of the maze along the Y axis of the X/Z plain.
+ * If the layer is invalid (above or below the maze) nothing will be printed.
+ * @param layer - the section of the maze to be printed to stdout
+ */
+void Maze::printLayer(int layer) {
+	cout << "Told to print layer " << layer << endl;
 }
 
 /**

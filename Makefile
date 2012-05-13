@@ -21,7 +21,9 @@ SOURCES = \
 	$(SRCDIR)/game.cpp \
 	$(SRCDIR)/maze.cpp \
 	$(SRCDIR)/bot.cpp \
-	$(SRCDIR)/env_config.cpp
+	$(SRCDIR)/env_config.cpp \
+	$(SRCDIR)/pathfind.cpp \
+	$(SRCDIR)/pathtree.cpp
 
 TSTSOURCES = \
 	$(TSTSRCDIR)/test_unit.cpp \
