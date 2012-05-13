@@ -12,12 +12,12 @@ bool Game::buildEnv(EnvConfig cfg) {
 	EnvConfig::tMazeRows rows = cfg.getMazeRows();
 
 	m_pBot = new Bot(cfg.getBotCoord());
-	m_ExitCell = cfg.getExitCoord();
+	m_ExitCoord = cfg.getExitCoord();
 
 	Maze::tDimension dim = cfg.getDim();
-	Maze* pMaze = new Maze(dim);
+	m_pMaze = new Maze(dim);
 
-	initMazeCellsState(pMaze, rows, dim);
+	initMazeCellsState(m_pMaze, rows, dim);
 }
 
 /**
@@ -25,7 +25,20 @@ bool Game::buildEnv(EnvConfig cfg) {
  * This will run until the simulation either fails to find an exit, or the entities exit.
  */
 void Game::run() {
-	
+	// // TODO Move calculate the bot's route, between its current location and the exit.
+	// if (!m_pBot->calcRoute(m_pMaze, m_ExitCoord)) {
+	// 	cerr << "Not Escapable";
+	// 	return false;
+	// }
+
+	// while(m_pBot.getLoc != m_ExitCoord) {
+	// 	m_pBot->move();
+
+	// 	m_pMaze->printLayer(m_pBot->getLoc().y);
+	// }
+
+	// cout << "Escapable: " << m_pBot->getRouteUsed();
+	// return true;
 };
 
 /**

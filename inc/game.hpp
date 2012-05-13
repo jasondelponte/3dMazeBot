@@ -30,7 +30,7 @@ private:
 	Bot* m_pBot;
 
 	// Location of the exit point on the maze
-	Maze::tCoord m_ExitCell;
+	Maze::tCoord m_ExitCoord;
 
 	/**
 	 * Initializes the maze cells with the state from the configuration file
