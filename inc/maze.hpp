@@ -15,7 +15,8 @@ public:
 		CELL_SOLID,
 		CELL_EMPTY,
 		CELL_OCCUPIED,
-		CELL_EXIT
+		CELL_EXIT,
+		CELL_INVALID
 	};
 
 	// defines the size of a maze in all three deminsions.
@@ -49,6 +50,15 @@ public:
 			char buff[100]={0x00};
 			sprintf(buff, "(%d,%d,%d)", x, y, z);
 			return std::string(buff);
+		}
+		char direction(const tCoord coord) {
+			if (coord.y > y) { return 'N'; }
+			else if (coord.y < y) { return 'S'; }
+			else if (coord.x > x) { return 'E'; }
+			else if (coord.x < x) { return 'w'; }
+			else if (coord.z > z) { return 'U'; }
+			else if (coord.z < z) { return 'D'; }
+			return 'X';
 		}
 	};
 

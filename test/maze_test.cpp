@@ -11,9 +11,9 @@ using namespace std;
  * parent test unit as well.
  */
 MazeTest::MazeTest(): TestUnit() {
-	m_tests["TestCreateMaze"] = &TestCreateMaze;
-	m_tests["TestSetCellState"] = &TestSetCellState;
-	m_tests["TestCoordValidation"] = &TestCoordValidation;
+	m_tests["MazeTest::TestCreateMaze"] = &TestCreateMaze;
+	m_tests["MazeTest::TestSetCellState"] = &TestSetCellState;
+	m_tests["MazeTest::TestCoordValidation"] = &TestCoordValidation;
 }
 
 /**

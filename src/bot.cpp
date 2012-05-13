@@ -4,11 +4,11 @@ using namespace std;
 
 /**
  * Initialize the bot and its starting 
- * @param grid of the mazze the bot will be using to travel through
+ * @param the maze the bot will be using to travel through
  * @param current location of the bot in the grid.
  */
-Bot::Bot(Maze::tGrid* pGrid, Maze::tCoord loc): m_curLoc(loc) {
-	m_pathfinder.setGrid(pGrid);
+Bot::Bot(Maze* pMaze, Maze::tCoord loc): m_pMaze(pMaze), m_curLoc(loc) {
+	m_pathfinder.setGrid(pMaze->getGrid());
 }
 
 /**
@@ -34,7 +34,13 @@ bool Bot::calcRoute(Maze::tCoord dest) {
  * @returns string of the route used. "N,S,E,W,U,D";
  */
 string Bot::getRouteUsed() {
-	return "";
+	vector<char>::const_iterator cIt;
+	string routeUsed;
+	for (cIt=m_routeUsed.begin(); cIt != m_routeUsed.end(); cIt++) {
+		routeUsed += (char)*cIt;
+	}
+
+	return routeUsed;
 }
 
 /**
@@ -43,9 +49,33 @@ string Bot::getRouteUsed() {
  * @returns if the bot moved.
  */
 bool Bot::move() {
-	if (m_route.empty() && m_curLoc != m_destLoc) {
+	if (m_route.empty()) {
 		return false;
 	}
 
-	return false;
+	Maze::tCell* cell = m_route.top();
+	m_route.pop();
+	// Makesure we are actually moving
+	if (cell->coord == m_curLoc) {
+		return false;
+	}
+
+	// Make sure our next destination is valid
+	if (cell->state == Maze::CELL_SOLID || Maze::CELL_OCCUPIED) {
+		// TODO recalculate the route
+		return false;
+	}
+
+	// Keep track of our current route
+	m_routeUsed.push_back(m_curLoc.direction(cell->coord));
+
+	// Update the cells to our position in the maze, don't reset the exit cell' state
+	if (cell->state != Maze::CELL_EXIT) {
+		m_pMaze->updateCell(cell->coord, Maze::CELL_OCCUPIED);
+	}
+	m_pMaze->updateCell(m_curLoc, Maze::CELL_EMPTY);
+
+	m_curLoc = cell->coord;
+
+	return true;
 }

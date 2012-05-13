@@ -8,12 +8,12 @@
 using namespace std;
 
 /**
- * Initialize the maze test, and also make sure to initialize the 
+ * Initialize the test, and also make sure to initialize the 
  * parent test unit as well.
  */
 EnvConfigTest::EnvConfigTest(): TestUnit() {
-	m_tests["TestLoadProvidedFile"] = &TestLoadProvidedFile;
-	m_tests["TestCalcCoordFromRowDim"] = &TestCalcCoordFromRowDim;
+	m_tests["EnvConfigTest::TestLoadProvidedFile"] = &TestLoadProvidedFile;
+	m_tests["EnvConfigTest::TestCalcCoordFromRowDim"] = &TestCalcCoordFromRowDim;
 }
 
 

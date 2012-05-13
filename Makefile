@@ -28,7 +28,8 @@ SOURCES = \
 TSTSOURCES = \
 	$(TSTSRCDIR)/test_unit.cpp \
 	$(TSTSRCDIR)/maze_test.cpp \
-	$(TSTSRCDIR)/env_config_test.cpp
+	$(TSTSRCDIR)/env_config_test.cpp \
+	$(TSTSRCDIR)/pathtree_test.cpp
 
 # Set the build destination to be different than the source
 OBJECTS = $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SOURCES))

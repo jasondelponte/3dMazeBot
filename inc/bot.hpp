@@ -4,6 +4,7 @@
 #include "maze.hpp"
 #include "pathfind.hpp"
 
+#include <vector>
 #include <string>
 
 class Bot {
@@ -11,10 +12,10 @@ public:
 
 	/**
 	 * Initialize the bot and its starting location
-	 * @param grid of the mazze the bot will be using to travel through
+	 * @param the maze the bot will be using to travel through
 	 * @param current location of the bot in the grid.
 	 */
-	Bot(Maze::tGrid* pGrid, Maze::tCoord loc);
+	Bot(Maze* pMaze, Maze::tCoord loc);
 
 	/**
 	 * Attempts to find a rout from the bot's current location
@@ -49,12 +50,18 @@ private:
 	Maze::tCoord m_curLoc;
 	Maze::tCoord m_destLoc;
 
+	// Maze reference
+	Maze* m_pMaze;
+
 	// Pathfinder to find the route between 
 	// two coordiantes on the grid
 	PathFind m_pathfinder;
 
 	// The route to reach the destination
 	PathFind::tRoute m_route;
+
+	// list of the route used
+	std::vector<char> m_routeUsed;
 };
 
 #endif // !defined(_BOT_HPP_)

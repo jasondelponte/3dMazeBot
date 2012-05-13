@@ -27,7 +27,7 @@ bool Game::buildEnv(EnvConfig cfg) {
 	Maze::tDimension dim = cfg.getDim();
 	m_pMaze = new Maze(dim);
 
-	m_pBot = new Bot(m_pMaze->getGrid(), cfg.getBotCoord());
+	m_pBot = new Bot(m_pMaze, cfg.getBotCoord());
 
 	m_ExitCoord = cfg.getExitCoord();
 

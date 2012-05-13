@@ -1,6 +1,7 @@
 #ifndef _PATHFIND_HPP_
 #define _PATHFIND_HPP_
 
+#include "pathtree.hpp"
 #include "maze.hpp"
 
 #include <stack>
@@ -14,7 +15,7 @@ public:
 	};
 
 	// Route that should be used
-	typedef std::stack<Maze::tCell> tRoute;
+	typedef std::stack<Maze::tCell*> tRoute;
 
 	/**
 	 * Initializes the Path finder with the grid of the maze, and 
@@ -38,7 +39,7 @@ public:
 	 * @returns the route in cells the 
 	 */
 	tRoute findRoute(Maze::tCoord loc, Maze::tCoord dest);
-
+	
 private:
 };
 
