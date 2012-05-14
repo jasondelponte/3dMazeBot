@@ -1,6 +1,8 @@
 #include "pathtree.hpp"
 
+#include <queue>
 
+using namespace std;
 
 /**
  * Initializes the node
@@ -8,7 +10,7 @@
  * @param c the cell to set the node to represent
  * @param children, list of children to be attached to this node
  */
-PathTree::PathTree(PathTree* p, Maze::tCell* c, PathTree::tChildren ch): m_parent(p), m_cell(c), m_children(ch) {}
+PathTree::PathTree(PathTree* p, Maze::tCell* c, PathTree::tChildren ch): m_parent(p), m_cell(c), m_children(ch), m_meta(VALID) {}
 
 /** 
  * Takes care of deleting all children nodes still attached to this node
@@ -33,25 +35,27 @@ PathTree::~PathTree() {
  * is not the same as this node's cell, and isn't already a sibling of
  * this node.
  * @param the cell to add as a child to this node
- * @returns if the child was dded.
+ * @returns the newly added child.
  */
-bool PathTree::addChild(Maze::tCell* pCell) {
-	if (hasAncestor(*pCell) || *this == *pCell || hasSibling(*pCell)) { return false; }
+PathTree* PathTree::addChild(Maze::tCell* pCell) {
+	if (hasAncestor(*pCell) || *this == *pCell || hasSibling(*pCell)) { return NULL; }
 
-	m_children.push_back(new PathTree(this, pCell));
+	PathTree* pChild = new PathTree(this, pCell);
+	m_children.push_back(pChild);
 
-	return true;
+	return pChild;
 }
 
 /**
  * Appends a new node to this node as a child
  * @param the node to add as a child to this node
- * @returns if the child was dded.
+ * @returns the newly added child.
  */
-void PathTree::addChild(PathTree* pChild) {
+PathTree* PathTree::addChild(PathTree* pChild) {
 	pChild->detach();
 	pChild->m_parent = this;
 	m_children.push_back(pChild);
+	return pChild;
 }
 
 /**
@@ -120,4 +124,91 @@ bool PathTree::hasSibling(Maze::tCell cell) {
 	}
 
 	return false;
+}
+
+/**
+ * Updates this Node's parent to be a child. This change cascades up the
+ * true until the original root node is now a child.
+ * NOTE: Chaning the root will make it possible for loops in the search tree to occure
+ * it won't create circular lookups, but the worst case branch could hit
+ * this new root twice if it already contined it as a child.
+ * @returns a reference to this node which is now the root of the tree.
+ */
+PathTree* PathTree::makeRoot() {
+	if (m_parent == NULL) { return this; }
+
+	PathTree* newParent = NULL;
+	PathTree* oldParent = m_parent;
+	PathTree* node = this;
+	while (node != NULL) {
+		if (oldParent != NULL) {
+			oldParent->removeChild(node);
+			node->m_children.push_back(oldParent);
+		}
+		node->m_parent = newParent;
+
+		newParent = node;
+		node = oldParent;
+		if (oldParent != NULL) {
+			oldParent = oldParent->m_parent;
+		}
+	}
+
+	return this;
+}
+
+/**
+ * Travels up the tree and returns the root node
+ * @returns root tree node. NULL is returned if we're unable to find the root node some how.
+ */
+PathTree* PathTree::getRoot() {
+	if (m_parent == NULL) { return this; }
+
+	PathTree* parent = m_parent;
+	while (parent != NULL) {
+		if (parent->m_parent == NULL) { return parent; }
+
+		parent = parent->m_parent;
+	}
+
+	return NULL;
+}
+
+/**
+ * returns the child cell specified as a child using breath first search
+ * @param child node being serached for.
+ * @returns the child if found, null otherwise
+ */
+PathTree* PathTree::getNode(Maze::tCell cell) {
+	return getNode(cell.coord);
+}
+
+/**
+ * Searchs through the tree looking for the node containing the coord
+ * using breath first search.
+ * @param coord the location of the cell we're looking for
+ * @returns the node if found.
+ */
+PathTree* PathTree::getNode(Maze::tCoord coord) {
+	if (*this == coord) { return this; }
+
+	queue<PathTree*> nodeQ;
+	nodeQ.push(this);
+
+	while (!nodeQ.empty()) {
+		PathTree* node = nodeQ.front();
+		nodeQ.pop();
+
+		if (*node == coord) { return node; }
+
+		tChildren::const_iterator cIt;
+		for (cIt = node->m_children.begin(); cIt != node->m_children.end(); cIt++) {
+			PathTree* child = *cIt;
+			if (*child == coord) { return child; }
+
+			nodeQ.push(child);
+		}
+	}
+
+	return NULL;
 }

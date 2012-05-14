@@ -108,22 +108,22 @@ string MazeTest::TestSetCellState(TestUnit::tTestData* pTestData) {
 	Maze::tGrid* pGrid = pMaze->getGrid();
 
 	// Verify the changes only occred where desired
-	Maze::tCell cell = pGrid->layout[noChg.x][noChg.y][noChg.z];
-	if (cell.state != Maze::CELL_EMPTY) {
+	Maze::tCell* cell = pGrid->at(noChg);
+	if (cell->state != Maze::CELL_EMPTY) {
 		return "Cell state change when it wasn't supposed to.";
 	}
 
 	// Verify changes
-	cell = pGrid->layout[chg1.x][chg1.y][chg1.z];
-	if (cell.state != Maze::CELL_SOLID) {
+	cell = pGrid->at(chg1);
+	if (cell->state != Maze::CELL_SOLID) {
 		return "Unable to set cell to solid state.";
 	}
-	cell = pGrid->layout[chg2.x][chg2.y][chg2.z];
-	if (cell.state != Maze::CELL_OCCUPIED) {
+	cell = pGrid->at(chg2);
+	if (cell->state != Maze::CELL_OCCUPIED) {
 		return "Unable to set cell to occupied state.";
 	}
-	cell = pGrid->layout[chg3.x][chg3.y][chg3.z];
-	if (cell.state != Maze::CELL_EXIT) {
+	cell = pGrid->at(chg3);
+	if (cell->state != Maze::CELL_EXIT) {
 		return "Unable to set cell to exit state.";
 	}
 

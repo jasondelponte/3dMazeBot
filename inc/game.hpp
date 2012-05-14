@@ -31,6 +31,12 @@ public:
 	 */
 	bool run();
 
+	/**
+	 * Retruns a reference of the maze
+	 * @returns a reference of the maze
+	 */
+	Maze* getMaze() { return m_pMaze; }
+
 private:
 	// Game board that the bot will move through.
 	Maze* m_pMaze;

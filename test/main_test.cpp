@@ -5,6 +5,7 @@
 #include "maze_test.hpp"
 #include "env_config_test.hpp"
 #include "pathtree_test.hpp"
+#include "pathfind_test.hpp"
 
 /**
  * Run through all of the test case and report failure for any testcase that fails
@@ -14,7 +15,8 @@ int main(int argc, char* argv[]) {
 	TestUnit *tests[] = {
 		new MazeTest(),
 		new EnvConfigTest(),
-		new PathTreeTest()
+		new PathTreeTest(),
+		new PathFindTest()
 	};
 	int numTests = sizeof(tests)/sizeof(TestUnit*);
 

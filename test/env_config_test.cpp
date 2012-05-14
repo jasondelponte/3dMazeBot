@@ -26,7 +26,7 @@ string EnvConfigTest::TestLoadProvidedFile(TestUnit::tTestData* pTestData) {
 	char errStr[100] = {0x00};
 
 	EnvConfig cfg;
-	char fileName[] = "test/configs/input";
+	char fileName[] = "test/configs/input00";
 	if (!cfg.parseEnv(fileName)) {
 		return "Failed to load environment config file";
 	}

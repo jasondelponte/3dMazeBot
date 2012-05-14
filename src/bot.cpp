@@ -1,5 +1,7 @@
 #include "bot.hpp"
 
+#include <iostream>
+
 using namespace std;
 
 /**
@@ -9,6 +11,7 @@ using namespace std;
  */
 Bot::Bot(Maze* pMaze, Maze::tCoord loc): m_pMaze(pMaze), m_curLoc(loc) {
 	m_pathfinder.setGrid(pMaze->getGrid());
+	m_pathfinder.setLoc(m_curLoc);
 }
 
 /**
@@ -19,7 +22,7 @@ Bot::Bot(Maze* pMaze, Maze::tCoord loc): m_pMaze(pMaze), m_curLoc(loc) {
  */
 bool Bot::calcRoute(Maze::tCoord dest) {
 	m_destLoc = dest;
-	PathFind::tRoute route = m_pathfinder.findRoute(m_curLoc, dest);
+	PathFind::tRoute route = m_pathfinder.findRoute(dest);
 	if (route.empty()) {
 		return false;
 	}
@@ -61,7 +64,7 @@ bool Bot::move() {
 	}
 
 	// Make sure our next destination is valid
-	if (cell->state == Maze::CELL_SOLID || Maze::CELL_OCCUPIED) {
+	if (cell->state == Maze::CELL_SOLID || cell->state == Maze::CELL_OCCUPIED) {
 		// TODO recalculate the route
 		return false;
 	}

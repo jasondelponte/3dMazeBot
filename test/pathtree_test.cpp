@@ -17,6 +17,8 @@ PathTreeTest::PathTreeTest(): TestUnit() {
 	m_tests["PathTreeTest::TestCompareNodeToCell"] = &TestCompareNodeToCell;
 	m_tests["PathTreeTest::TestAddCellsToPathTree"] = &TestAddCellsToPathTree;
 	m_tests["PathTreeTest::TestAncstorCellSearch"] = &TestAncstorCellSearch;
+	m_tests["PathTreeTest::TestChangeTreeRoot"] = &TestChangeTreeRoot;
+	m_tests["PathTreeTest::TestSearchForNode"] = &TestSearchForNode;
 }
 
 /**
@@ -124,5 +126,93 @@ string PathTreeTest::TestAncstorCellSearch(TestUnit::tTestData* pTestData) {
 	}
 
 	delete root;
+	return "";
+}
+
+/**
+ * Verify that the root of the tree can be changed.
+ * @param pTestData - pointer to test container, not used for these tests
+ * @returns error string if any.
+ */
+string PathTreeTest::TestChangeTreeRoot(TestUnit::tTestData* pTestData) {
+	Maze::tCell cell1 = Maze::tCell(Maze::CELL_EMPTY, Maze::tCoord(1,1,1));
+	Maze::tCell cell2 = Maze::tCell(Maze::CELL_EMPTY, Maze::tCoord(2,2,2));
+	Maze::tCell cell3 = Maze::tCell(Maze::CELL_EMPTY, Maze::tCoord(3,3,3));
+	Maze::tCell cell4 = Maze::tCell(Maze::CELL_EMPTY, Maze::tCoord(4,4,4));
+	Maze::tCell cell5 = Maze::tCell(Maze::CELL_EMPTY, Maze::tCoord(5,5,5));
+
+	PathTree* root = new PathTree(NULL, &cell1);
+	PathTree* last = root->addChild(&cell2);
+	last = last->addChild(&cell3);
+	last = last->addChild(&cell4);
+	last = last->addChild(&cell5);
+
+	last->makeRoot();
+
+	if (*last != cell5 || last->getParent() != NULL) {
+		delete last;
+		delete root;
+		return "The 5th node was not moved correctly.";
+	}
+	PathTree::tChildren children = last->getChildren();
+	if (*(children[0]) != cell4 || *(children[0]->getParent()) != cell5) {
+		delete last;
+		return "The 4th node was not moved correctly.";
+	}
+	children = children[0]->getChildren();
+	if (*(children[0]) != cell3 || *(children[0]->getParent()) != cell4) {
+		delete last;
+		return "The 3rd node was not moved correctly.";
+	}
+	children = children[0]->getChildren();
+	if (*(children[0]) != cell2 || *(children[0]->getParent()) != cell3) {
+		delete last;
+		return "The 2nd node was not moved correctly.";
+	}
+	children = children[0]->getChildren();
+	if (*(children[0]) != cell1 || *(children[0]->getParent()) != cell2) {
+		delete last;
+		return "The 1st node was not moved correctly.";
+	}
+	if (children[0]->getChildren().size() > 0) {
+		delete last;
+		return "The 1st node still has children. There should be none.";
+	}
+
+	delete last;
+	return "";
+}
+
+/**
+ * Verifty that we can search for a node in the tree.
+ * @param pTestData - pointer to test container, not used for these tests
+ * @returns error string if any.
+ */
+string PathTreeTest::TestSearchForNode(TestUnit::tTestData* pTestData) {
+	Maze::tCell cell1 = Maze::tCell(Maze::CELL_EMPTY, Maze::tCoord(1,1,1));
+	Maze::tCell cell2 = Maze::tCell(Maze::CELL_EMPTY, Maze::tCoord(2,2,2));
+	Maze::tCell cell3 = Maze::tCell(Maze::CELL_EMPTY, Maze::tCoord(3,3,3));
+	Maze::tCell cell4 = Maze::tCell(Maze::CELL_EMPTY, Maze::tCoord(4,4,4));
+	Maze::tCell cell5 = Maze::tCell(Maze::CELL_EMPTY, Maze::tCoord(5,5,5));
+
+	PathTree* root = new PathTree(NULL, &cell1);
+	PathTree* last = root->addChild(&cell2);
+	root->addChild(&cell5);
+	last = last->addChild(&cell3);
+	last = last->addChild(&cell4);
+	last = last->addChild(&cell5);
+
+	PathTree* node = root->getNode(cell3);
+	if (node == NULL || *node != cell3) {
+		delete root;
+		return "Failed to find cell 3 in tree.";
+	}
+
+	node = root->getNode(cell5);
+	if (node == NULL || *node != cell5) {
+		delete root;
+		return "Failed to find cell 5 in tree.";
+	}
+
 	return "";
 }

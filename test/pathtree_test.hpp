@@ -44,6 +44,20 @@ private:
 	 */
 	static std::string TestAncstorCellSearch(TestUnit::tTestData* pTestData);
 
+	/**
+	 * Verify that the root of the tree can be changed.
+	 * @param pTestData - pointer to test container, not used for these tests
+	 * @returns error string if any.
+	 */
+	static std::string TestChangeTreeRoot(TestUnit::tTestData* pTestData);
+
+	/**
+	 * Verifty that we can search for a node in the tree.
+	 * @param pTestData - pointer to test container, not used for these tests
+	 * @returns error string if any.
+	 */
+	static std::string TestSearchForNode(TestUnit::tTestData* pTestData);
+
 };
 
 #endif //!defined(_PATHTREE_TEST_HPP_)

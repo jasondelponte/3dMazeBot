@@ -46,18 +46,27 @@ public:
 		bool operator!=(const tCoord c) {
 			return (x != c.x || y != c.y || z != c.z);
 		}
+		tCoord operator+(const tCoord c) {
+			return tCoord(x + c.x, y + c.y, z + c.z);
+		}
+		tCoord &operator+=(const tCoord c) {
+			x += c.x;
+			y += c.y;
+			z += c.z;
+			return *this;
+		}
 		std::string String() {
 			char buff[100]={0x00};
 			sprintf(buff, "(%d,%d,%d)", x, y, z);
 			return std::string(buff);
 		}
 		char direction(const tCoord coord) {
-			if (coord.y > y) { return 'N'; }
-			else if (coord.y < y) { return 'S'; }
+			if (coord.z < z) { return 'N'; }
+			else if (coord.z > z) { return 'S'; }
 			else if (coord.x > x) { return 'E'; }
 			else if (coord.x < x) { return 'w'; }
-			else if (coord.z > z) { return 'U'; }
-			else if (coord.z < z) { return 'D'; }
+			else if (coord.y > y) { return 'U'; }
+			else if (coord.y < y) { return 'D'; }
 			return 'X';
 		}
 	};
@@ -75,6 +84,13 @@ public:
 		tCell*** layout;
 		tDimension dim;
 		tGrid(tDimension d=tDimension(), tCell*** l=NULL): dim(d), layout(l) {}
+		tCell* at(tCoord c) {
+			// Make sure the coordinates are valid first!
+			if (c.x < 0 || c.y < 0 || c.z < 0) { return NULL; }
+			if (c.x >= dim.width || c.y >= dim.height || c.z >= dim.depth) { return NULL; }
+
+			return &(layout[c.x][c.y][c.z]);
+		}
 	};
 
 	/**

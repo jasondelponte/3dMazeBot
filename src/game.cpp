@@ -44,21 +44,20 @@ bool Game::run() {
 	// we'll know here and can stop before we start moving the bot.
 	if (!m_pBot->calcRoute(m_ExitCoord)) {
 		cerr << "Not Escapable" << endl;
-		cleanup();
 		return false;
 	}
 
 	// Step through the simulation telling the bot to move through the maze
 	while(m_pBot->getLoc() != m_ExitCoord) {
 		if (!m_pBot->move()) {
-			cerr << "Bot didn't move this tern" << endl;
+			cerr << "Bot didn't move, quiting" << endl;
+			return false;
 		}
 
 		m_pMaze->printLayer(m_pBot->getLoc().y);
 	}
 
-	cout << "Escapable: " << m_pBot->getRouteUsed();
-	cleanup();
+	cout << "Escapable: " << m_pBot->getRouteUsed() << endl;
 	return true;
 };
 

@@ -33,7 +33,7 @@ Maze::~Maze() {
 bool Maze::updateCell(Maze::tCoord coord, Maze::eCell state) {
 	if (!isValidCoord(coord)) { return false; }
 
-	m_grid->layout[coord.x][coord.y][coord.z].state = state;
+	m_grid->at(coord)->state = state;
 
 	return true;
 }
@@ -44,9 +44,9 @@ bool Maze::updateCell(Maze::tCoord coord, Maze::eCell state) {
  * @returns if the coordinate is valid
  */
 bool Maze::isValidCoord(Maze::tCoord coord) {
-	if (!hasGrid()) { return false; }
-	if (coord.x < 0 || coord.y < 0 || coord.z < 0) { return false; }
-	if (coord.x >= m_grid->dim.width || coord.y >= m_grid->dim.height || coord.z >= m_grid->dim.depth) { return false; }
+	if (!hasGrid() || m_grid->at(coord) == NULL) {
+		return false;
+	}
 
 	return true;
 }
