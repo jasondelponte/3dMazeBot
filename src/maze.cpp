@@ -57,7 +57,6 @@ bool Maze::isValidCoord(Maze::tCoord coord) {
  * @param layer - the section of the maze to be printed to stdout
  */
 void Maze::printLayer(int layer) {
-	cout << "Told to print layer " << layer << endl;
 }
 
 /**
