@@ -58,7 +58,11 @@ bool EnvConfig::parseEnv(char cfgFileName[]) {
 	m_dim.depth = numRows / m_dim.height;
 
 	// Update the Bot and exit with their y & z coords based on their row.
-	m_botLoc.coord = calcCoordFromRowDim(m_botLoc.coord.x, m_botLoc.row, m_dim);
+	tBotCfgLocs::iterator it;
+	for (it = m_bots.begin(); it != m_bots.end(); it++) {
+		tCfgLoc cfgLoc = (*it).second;
+		(*it).second.coord = calcCoordFromRowDim(cfgLoc.coord.x, cfgLoc.row, m_dim);
+	}
 	m_exitLoc.coord = calcCoordFromRowDim(m_exitLoc.coord.x, m_exitLoc.row, m_dim);
 
 	return true;
@@ -90,8 +94,9 @@ EnvConfig::tMazeRow EnvConfig::parseRow(string line, int rowIdx) {
 			break;
 
 			case 'B': // The bot's location
-				m_botLoc.coord.x = idx;
-				m_botLoc.row = rowIdx;
+			case 'A': // Second Bot
+				m_bots[lineChar[idx]].coord.x = idx;
+				m_bots[lineChar[idx]].row = rowIdx;
 				row.push_back(Maze::CELL_OCCUPIED);
 			break;
 
@@ -133,3 +138,17 @@ Maze::tCoord EnvConfig::calcCoordFromRowDim(int x, int row, Maze::tDimension dim
 
 	return Maze::tCoord(x, y, z);
 }
+
+/**
+ * Returns the location of the bots' starting points in the maze
+ * @returns tBotCoords - Location of the bots' starting point in the meaze.
+ */
+EnvConfig::tBotCoords EnvConfig::getBotCoords() {
+	tBotCoords coords;
+	tBotCfgLocs::const_iterator cIt;
+	for (cIt = m_bots.begin(); cIt != m_bots.end(); cIt++) {
+		coords[(*cIt).first] = (*cIt).second.coord;
+	}
+
+	return coords;
+};

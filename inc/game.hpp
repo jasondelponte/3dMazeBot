@@ -5,6 +5,8 @@
 #include "maze.hpp"
 #include "bot.hpp"
 
+#include <map>
+
 class Game {
 public:
 	/**
@@ -38,14 +40,29 @@ public:
 	Maze* getMaze() { return m_pMaze; }
 
 private:
+	typedef std::map<char, Bot*> tBots;
+
 	// Game board that the bot will move through.
 	Maze* m_pMaze;
 
-	// Reference to the bot that will travel the maze
-	Bot* m_pBot;
+	// Map of the bot that will travel the maze
+	tBots m_bots;
 
 	// Location of the exit point on the maze
 	Maze::tCoord m_ExitCoord;
+
+	/**
+	 * Creates the bots from the entity maping provided.
+	 * @param coords map of symbol and grid coordinates for each bot.
+	 */
+	void createBots(EnvConfig::tBotCoords coords);
+
+	/**
+	 * Calculate the bot's initialize route through the maze. If a bot is unable to find
+	 * a path to the exit, it will be removed from the game.
+	 * @returns if any of the buts were able to find a route
+	 */
+	void initBots();
 
 	/**
 	 * Initializes the maze cells with the state from the configuration file

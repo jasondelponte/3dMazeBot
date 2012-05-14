@@ -102,8 +102,9 @@ PathTree* PathFind::generatePathTree(Maze::tCoord from, Maze::tCoord dest) {
 PathTree* PathFind::queueValidNodeAtCoord(PathTree* pParent, Maze::tCoord coord, tTreeNodeQueue &nodeQ) {
 	Maze::tCell* pCell = m_pGrid->at(coord);
 
-	 // Make sure we didn't go out of bounds, and the cell is one we care about.
-	if (pCell == NULL || pCell->state == Maze::CELL_SOLID || pCell->state == Maze::CELL_OCCUPIED) {
+	// Make sure we didn't go out of bounds, and the cell is not solid. Occupied cells are
+	// valid, because we expect the entity to be taking that cell to move.
+	if (pCell == NULL || pCell->state == Maze::CELL_SOLID) {
 		return NULL;
 	}
 

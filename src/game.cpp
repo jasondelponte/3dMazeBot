@@ -7,7 +7,7 @@ using namespace std;
 /**
  * Initializes tha game so it can be built
  */
-Game::Game(): m_pMaze(NULL), m_pBot(NULL) {}
+Game::Game(): m_pMaze(NULL) {}
 
 /**
  * Cleans up any memeory allocated remaning
@@ -27,11 +27,21 @@ bool Game::buildEnv(EnvConfig cfg) {
 	Maze::tDimension dim = cfg.getDim();
 	m_pMaze = new Maze(dim);
 
-	m_pBot = new Bot(m_pMaze, cfg.getBotCoord());
-
+	createBots(cfg.getBotCoords());
 	m_ExitCoord = cfg.getExitCoord();
 
 	initMazeCellsState(m_pMaze, rows, dim);
+}
+
+/**
+ * Creates the bots from the entity maping provided.
+ * @param coords map of symbol and grid coordinates for each bot.
+ */
+void Game::createBots(EnvConfig::tBotCoords coords) {
+	EnvConfig::tBotCoords::const_iterator cIt;
+	for (cIt = coords.begin(); cIt != coords.end(); cIt++) {
+		m_bots[(*cIt).first] = new Bot(m_pMaze, (*cIt).second);
+	}
 }
 
 /**
@@ -40,26 +50,47 @@ bool Game::buildEnv(EnvConfig cfg) {
  * @returns true if the maze was successfuly solved. false otherwise.
  */
 bool Game::run() {
-	// Calculate the bot's initialize route through the maze. If it is unable to find a path
-	// we'll know here and can stop before we start moving the bot.
-	if (!m_pBot->calcRoute(m_ExitCoord)) {
-		cerr << "Not Escapable" << endl;
-		return false;
-	}
+	// init the bot's by calculating their routes
+	initBots();
 
 	// Step through the simulation telling the bot to move through the maze
-	while(m_pBot->getLoc() != m_ExitCoord) {
-		if (!m_pBot->move()) {
-			cerr << "Bot didn't move, quiting" << endl;
-			return false;
+	while(m_bots.size() > 0) {
+		tBots::iterator it;
+		for (it = m_bots.begin(); it != m_bots.end(); it++) {
+			Bot* pBot = (*it).second;
+
+			if (!pBot->move()) {
+				cerr << "Bot [" << (*it).first << "], didn't move, waiting a turn." << endl;
+				continue;
+			}
+
+			if (pBot->getLoc() == m_ExitCoord) {
+				cout << "Bot [" << (*it).first << "], Escapable: " << pBot->getRouteUsed() << endl;
+				m_bots.erase(it);
+			}
 		}
 
-		m_pMaze->printLayer(m_pBot->getLoc().y);
+		// m_pMaze->printLayer(m_pBot->getLoc().y);
 	}
 
-	cout << "Escapable: " << m_pBot->getRouteUsed() << endl;
 	return true;
 };
+
+/**
+ * Calculate the bot's initialize route through the maze. If a bot is unable to find
+ * a path to the exit, it will be removed from the game.
+ * @returns if any of the buts were able to find a route
+ */
+void Game::initBots() {
+	tBots::iterator it;
+	for (it = m_bots.begin(); it != m_bots.end(); it++) {
+		Bot* pBot = (*it).second;
+		if (!pBot->calcRoute(m_ExitCoord)) {
+			cerr << "Bot [" << (*it).first << "], Not Escapable." << endl;
+			m_bots.erase(it);
+		}
+	}
+}
 
 /**
  * Initializes the maze cells with the state from the configuration file
@@ -96,8 +127,11 @@ void Game::cleanup() {
 		delete m_pMaze;
 		m_pMaze = NULL;
 	}
-	if (m_pBot != NULL) {
-		delete m_pBot;
-		m_pBot = NULL;
+
+	tBots::iterator it;
+	for (it = m_bots.begin(); it != m_bots.end(); it++) {
+		Bot* pBot = (*it).second;
+		delete pBot;
+		m_bots.erase(it);
 	}
 }

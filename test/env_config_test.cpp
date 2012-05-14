@@ -16,7 +16,6 @@ EnvConfigTest::EnvConfigTest(): TestUnit() {
 	m_tests["EnvConfigTest::TestCalcCoordFromRowDim"] = &TestCalcCoordFromRowDim;
 }
 
-
 /**
  * Loads a test file from disk, and verifieds it was loaded correctly
  * @param pTestData - pointer to test container, not used for these tests
@@ -26,7 +25,7 @@ string EnvConfigTest::TestLoadProvidedFile(TestUnit::tTestData* pTestData) {
 	char errStr[100] = {0x00};
 
 	EnvConfig cfg;
-	char fileName[] = "test/configs/input00";
+	char fileName[] = "test/configs/inputab";
 	if (!cfg.parseEnv(fileName)) {
 		return "Failed to load environment config file";
 	}
@@ -37,16 +36,17 @@ string EnvConfigTest::TestLoadProvidedFile(TestUnit::tTestData* pTestData) {
 		return "Invalid dimensions were read from file, expecting 5x3x4. Got: " + string(errStr);
 	}
 
-	Maze::tCoord botLoc = cfg.getBotCoord();
-	if (botLoc.x != 0 || botLoc.y != 0 || botLoc.z != 0) {
-		sprintf(errStr, "%d,%d,%d", botLoc.x, botLoc.y, botLoc.z);
-		return "The location of the bot is not valid, expecting (0,0,0). Got: " + string(errStr);
+	EnvConfig::tBotCoords cords = cfg.getBotCoords();
+	if (cords['A'] != Maze::tCoord(2,1,2)) {
+		return "The location of the A bot is not valid, expecting (2,1,2). Got: " + cords['A'].String();
+	}
+	if (cords['B'] != Maze::tCoord(0,0,0)) {
+		return "The location of the B bot is not valid, expecting (2,1,2). Got: " + cords['B'].String();
 	}
 
 	Maze::tCoord exitLoc = cfg.getExitCoord();
-	if (exitLoc.x != 4 || exitLoc.y != 2 || exitLoc.z != 0) {
-		sprintf(errStr, "%d,%d,%d", exitLoc.x, exitLoc.y, exitLoc.z);
-		return "The location of the exit is not valid, expecting (4,2,0). Got: " + string(errStr);
+	if (exitLoc != Maze::tCoord(4,2,0)) {
+		return "The location of the exit is not valid, expecting (4,2,0). Got: " + exitLoc.String();
 	}
 
 	EnvConfig::tMazeRows rows = cfg.getMazeRows();
@@ -64,7 +64,6 @@ string EnvConfigTest::TestLoadProvidedFile(TestUnit::tTestData* pTestData) {
 
 	return "";
 }
-
 
 /**
  * Verifies that the calculate coordinates from a row/dim works correctly

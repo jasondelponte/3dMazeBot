@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <map>
 
 #include "maze.hpp"
 
@@ -13,10 +14,6 @@
  */
 class EnvConfig {
 public:
-	// A 2 dimentional list of the cells on the board layed out in rows
-	typedef std::vector<Maze::eCell> tMazeRow;
-	typedef std::vector<tMazeRow> tMazeRows;
-
 	// Defines a point of interest in the maze where the position
 	// of it needs to be identified at the start.
 	struct tCfgLoc {
@@ -25,6 +22,12 @@ public:
 
 		tCfgLoc(int r=0, Maze::tCoord c = Maze::tCoord()): row(r), coord(c){};
 	};
+
+	// A 2 dimentional list of the cells on the board layed out in rows
+	typedef std::vector<Maze::eCell> tMazeRow;
+	typedef std::vector<tMazeRow> tMazeRows;
+	typedef std::map<char, tCfgLoc> tBotCfgLocs;
+	typedef std::map<char, Maze::tCoord> tBotCoords;
 
 	/**
 	 * Builds the game environment from the config file
@@ -40,10 +43,10 @@ public:
 	Maze::tDimension getDim() { return m_dim; };
 
 	/**
-	 * Returns the location of the bot's starting point in the maze
-	 * @returns tCoord - Location of the bot's starting point in the meaze.
+	 * Returns the location of the bots' starting points in the maze
+	 * @returns tBotCoords - Location of the bots' starting point in the meaze.
 	 */
-	Maze::tCoord getBotCoord() { return m_botLoc.coord; };
+	tBotCoords getBotCoords();
 
 	/**
 	 * Returns the coordinates of the exit in the maze
@@ -71,8 +74,8 @@ private:
 	// Total number of layers
 	Maze::tDimension m_dim;
 
-	// Defines the bot's starting location in the maze
-	tCfgLoc m_botLoc;
+	// Defines the bots' starting location in the maze
+	tBotCfgLocs m_bots;
 
 	// Defines the exit's location in the maze
 	tCfgLoc m_exitLoc;

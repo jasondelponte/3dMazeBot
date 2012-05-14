@@ -57,15 +57,15 @@ bool Bot::move() {
 	}
 
 	Maze::tCell* cell = m_route.top();
-	m_route.pop();
-	// Makesure we are actually moving
+	// Make sure we are actually moving
 	if (cell->coord == m_curLoc) {
+		m_route.pop();
 		return false;
 	}
 
 	// Make sure our next destination is valid
 	if (cell->state == Maze::CELL_SOLID || cell->state == Maze::CELL_OCCUPIED) {
-		// TODO recalculate the route
+		// No need to pop the stack here since we'll be trying this cell again next round.
 		return false;
 	}
 
@@ -80,5 +80,6 @@ bool Bot::move() {
 
 	m_curLoc = cell->coord;
 
+	m_route.pop();
 	return true;
 }
