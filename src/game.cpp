@@ -55,22 +55,33 @@ bool Game::run() {
 
 	// Step through the simulation telling the bot to move through the maze
 	while(m_bots.size() > 0) {
+		Maze::tSymCoordPairs pois; // points of interest that we want to make sure get drawn
+		pois.push_back(Maze::tSymCoordPair('E', m_ExitCoord));
+
 		tBots::iterator it;
 		for (it = m_bots.begin(); it != m_bots.end(); it++) {
+			char symb = (*it).first;
 			Bot* pBot = (*it).second;
 
 			if (!pBot->move()) {
-				cerr << "Bot [" << (*it).first << "], didn't move, waiting a turn." << endl;
+				cerr << "Bot [" << symb << "], path blocked, waiting a turn." << endl;
 				continue;
 			}
+			Maze::tCoord botLoc = pBot->getLoc();
+			pois.push_back(Maze::tSymCoordPair(symb, botLoc));
 
-			if (pBot->getLoc() == m_ExitCoord) {
-				cout << "Bot [" << (*it).first << "], Escapable: " << pBot->getRouteUsed() << endl;
+			// Cleanup the bot if it has reached the exit.
+			if (botLoc == m_ExitCoord) {
+				cout << "Bot [" << symb << "], Escapable: " << pBot->getRouteUsed() << endl;
+				// im_pMaze->updateCell(botLoc, Maze::CELL_EMPTY);
 				m_bots.erase(it);
+				delete pBot;
 			}
 		}
 
-		// m_pMaze->printLayer(m_pBot->getLoc().y);
+		m_pMaze->printPOIs(pois);
+
+		usleep(500 * 1000); // Sleep 0.5 second for the simulation
 	}
 
 	return true;

@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
+#include <utility>
+#include <vector>
 
 /**
  * Definies the maze object that the entities will travel through.
@@ -64,7 +66,7 @@ public:
 			if (coord.z < z) { return 'N'; }
 			else if (coord.z > z) { return 'S'; }
 			else if (coord.x > x) { return 'E'; }
-			else if (coord.x < x) { return 'w'; }
+			else if (coord.x < x) { return 'W'; }
 			else if (coord.y > y) { return 'U'; }
 			else if (coord.y < y) { return 'D'; }
 			return 'X';
@@ -93,6 +95,9 @@ public:
 		}
 	};
 
+	typedef std::pair<char, tCoord> tSymCoordPair;
+	typedef std::vector<tSymCoordPair> tSymCoordPairs;
+
 	/**
 	 * Initializes the maze and with a given size. Once it is initialized it is
 	 * read to have its cells' state set.
@@ -111,13 +116,13 @@ public:
 	 * Returns a reference to the maze grid
 	 * @returns reference to maze grid
 	 */
-	tGrid* getGrid() { return m_grid; }
+	tGrid* getGrid() { return m_pGrid; }
 
 	/**
 	 * Returns if the grid specified  and is valid
 	 * @returns state of the grid
 	 */
-	bool hasGrid() { return (m_grid != NULL && m_grid->layout != NULL); }
+	bool hasGrid() { return (m_pGrid != NULL && m_pGrid->layout != NULL); }
 
 	/**
 	 * returns if the coordinate provided are valid inside of the grid
@@ -137,13 +142,13 @@ public:
 	/**
 	 * Prints out the layer of the maze along the Y axis of the X/Z plain.
 	 * If the layer is invalid (above or below the maze) nothing will be printed.
-	 * @param layer - the section of the maze to be printed to stdout
+	 * @param The points of interest in the maze that need to be printed
 	 */
-	void printLayer(int layer);
+	void printPOIs(tSymCoordPairs pois);
 
 private:
 	// 3d size dimension of the maze.
-	tGrid* m_grid;
+	tGrid* m_pGrid;
 
 
 	/**
