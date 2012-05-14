@@ -11,7 +11,7 @@ INCLUDES = -I$(BASEDIR)/inc -I$(BASEDIR)/test
 
 # Compiler and options
 CXX = g++
-CXXFLAGS = $(INCLUDES) -g 
+CXXFLAGS = $(INCLUDES)
 LDFLAGS =
 EXEC = $(BINDIR)/hoverbot
 TSTEXEC = $(BINDIR)/hoverbot_test
